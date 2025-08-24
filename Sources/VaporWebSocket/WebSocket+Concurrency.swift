@@ -1,9 +1,10 @@
+import FoundationEssentials
 import NIOCore
 import NIOHTTP1
 import class NIOPosix.MultiThreadedEventLoopGroup
-import WebSocketKit
 import RoutingKit
-import FoundationEssentials
+import VaporHTTP
+import WebSocketKit
 
 extension Request {
 

@@ -13,7 +13,9 @@ let package = Package(
         .library(name: "Vapor", targets: ["Vapor"]), // http & https
         .library(name: "VaporCrypto", targets: ["VaporCrypto"]),
         .library(name: "VaporTracing", targets: ["VaporTracing"]),
+        .library(name: "VaporWebSocket", targets: ["VaporWebSocket"]),
         .library(name: "VaporHTTP", targets: ["VaporHTTP"]), // http only
+
         .library(name: "XCTVapor", targets: ["XCTVapor"]),
         .library(name: "VaporTesting", targets: ["VaporTesting"]),
     ],
@@ -129,12 +131,11 @@ let package = Package(
                 .product(name: "NIOConcurrencyHelpers", package: "swift-nio"),
                 .product(name: "NIOCore", package: "swift-nio"),
                 .product(name: "NIOExtras", package: "swift-nio-extras"),
+                .product(name: "NIOFoundationCompat", package: "swift-nio"),
                 .product(name: "NIOHTTPCompression", package: "swift-nio-extras"),
                 .product(name: "NIOHTTP1", package: "swift-nio"),
-                .product(name: "NIOWebSocket", package: "swift-nio"),
                 .product(name: "RoutingKit", package: "routing-kit"),
                 .product(name: "ServiceContextModule", package: "swift-service-context"),
-                .product(name: "WebSocketKit", package: "websocket-kit"),
                 .product(name: "_NIOFileSystem", package: "swift-nio"),
                 .product(name: "_NIOFileSystemFoundationCompat", package: "swift-nio")
             ]
@@ -163,6 +164,19 @@ let package = Package(
             ]
         ),
 
+        // VaporWebSocket
+        .target(
+            name: "VaporWebSocket",
+            dependencies: [
+                .target(name: "VaporHTTP"),
+                .product(name: "NIOCore", package: "swift-nio"),
+                .product(name: "NIOHTTP1", package: "swift-nio"),
+                .product(name: "NIOWebSocket", package: "swift-nio"),
+                .product(name: "RoutingKit", package: "routing-kit"),
+                .product(name: "WebSocketKit", package: "websocket-kit"),
+            ]
+        ),
+
         // Vapor
         .target(
             name: "Vapor",
@@ -177,6 +191,7 @@ let package = Package(
                 .target(name: "VaporPasswords"),
                 .target(name: "VaporTracing"),
                 .target(name: "VaporURLEncodedForm"),
+                .target(name: "VaporWebSocket"),
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Metrics", package: "swift-metrics"),
                 .product(name: "Tracing", package: "swift-distributed-tracing"),

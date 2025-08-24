@@ -2,6 +2,7 @@ import RoutingKit
 import WebSocketKit
 import NIOCore
 import NIOHTTP1
+import VaporHTTP
 
 public struct WebSocketMaxFrameSize: Sendable, ExpressibleByIntegerLiteral {
     let value: Int

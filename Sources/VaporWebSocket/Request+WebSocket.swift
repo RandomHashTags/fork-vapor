@@ -1,6 +1,7 @@
 import NIOCore
-import WebSocketKit
 import NIOHTTP1
+import VaporHTTP
+import WebSocketKit
 
 extension Request {
      @preconcurrency public func webSocket(

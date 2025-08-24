@@ -1,5 +1,6 @@
 import Foundation
 import NIOCore
+import NIOFoundationCompat
 import NIOHTTP1
 
 #if swift(<6.0)

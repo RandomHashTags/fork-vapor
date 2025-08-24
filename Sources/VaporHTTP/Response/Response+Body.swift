@@ -2,6 +2,7 @@
 import FoundationEssentials
 import NIOCore
 import NIOConcurrencyHelpers
+import NIOFoundationCompat
 
 extension Response {
     struct BodyStream: Sendable {
