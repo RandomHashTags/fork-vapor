@@ -1,6 +1,7 @@
 import Crypto
 import FoundationEssentials
 import _NIOFileSystem
+import _NIOFileSystemFoundationCompat
 import NIOCore
 import NIOHTTP1
 import NIOPosix

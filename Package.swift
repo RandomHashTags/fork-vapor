@@ -11,6 +11,8 @@ let package = Package(
     ],
     products: [
         .library(name: "Vapor", targets: ["Vapor"]), // http & https
+        .library(name: "VaporCrypto", targets: ["VaporCrypto"]),
+        .library(name: "VaporTracing", targets: ["VaporTracing"]),
         .library(name: "VaporHTTP", targets: ["VaporHTTP"]), // http only
         .library(name: "XCTVapor", targets: ["XCTVapor"]),
         .library(name: "VaporTesting", targets: ["VaporTesting"]),
