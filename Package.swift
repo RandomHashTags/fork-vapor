@@ -136,7 +136,10 @@ let package = Package(
         
         // VaporURLEncodedForm
         .target(
-            name: "VaporURLEncodedForm"
+            name: "VaporURLEncodedForm",
+            dependencies: [
+                .product(name: "Logging", package: "swift-log")
+            ]
         ),
 
         // Vapor
