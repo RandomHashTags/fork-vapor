@@ -115,6 +115,7 @@ let package = Package(
                 .target(name: "VaporURLEncodedForm"),
                 .product(name: "Algorithms", package: "swift-algorithms"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
+                .product(name: "AsyncKit", package: "async-kit"),
                 .product(name: "ConsoleKit", package: "console-kit"),
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "MultipartKit", package: "multipart-kit"),
