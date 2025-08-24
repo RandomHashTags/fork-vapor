@@ -117,6 +117,7 @@ let package = Package(
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "AsyncKit", package: "async-kit"),
                 .product(name: "ConsoleKit", package: "console-kit"),
+                .product(name: "Crypto", package: "swift-crypto"),
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Metrics", package: "swift-metrics"),
                 .product(name: "MultipartKit", package: "multipart-kit"),
