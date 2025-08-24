@@ -25,7 +25,7 @@ let package = Package(
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.24.0"),
 
         // Sugary extensions for the SwiftNIO library
-        .package(url: "https://github.com/vapor/async-kit.git", from: "1.15.0"),
+        //.package(url: "https://github.com/vapor/async-kit.git", from: "1.15.0"),
 
         // 💻 APIs for creating interactive CLI tools.
         .package(url: "https://github.com/vapor/console-kit.git", from: "4.14.0"),
@@ -134,7 +134,6 @@ let package = Package(
                 .target(name: "VaporConsoleKit"),
                 .target(name: "VaporURLEncodedForm"),
                 .product(name: "Algorithms", package: "swift-algorithms"),
-                .product(name: "AsyncKit", package: "async-kit"),
                 .product(name: "ConsoleKit", package: "console-kit"),
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Metrics", package: "swift-metrics"),
@@ -192,8 +191,6 @@ let package = Package(
         .target(
             name: "Vapor",
             dependencies: [
-                .product(name: "AsyncHTTPClient", package: "async-http-client"),
-                .product(name: "AsyncKit", package: "async-kit"),
                 .target(name: "VaporAuthentication"),
                 .target(name: "VaporBcrypt"),
                 .target(name: "VaporConsoleKit"),
@@ -203,6 +200,7 @@ let package = Package(
                 .target(name: "VaporTracing"),
                 .target(name: "VaporURLEncodedForm"),
                 .target(name: "VaporWebSocket"),
+                .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Metrics", package: "swift-metrics"),
                 .product(name: "Tracing", package: "swift-distributed-tracing"),

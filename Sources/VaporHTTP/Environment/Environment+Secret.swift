@@ -1,6 +1,5 @@
 import NIOCore
 import NIOPosix
-import AsyncKit
 import _NIOFileSystem
 
 extension Environment {
@@ -31,7 +30,7 @@ extension Environment {
     @available(*, deprecated, message: "Use an async version of secret instead")
     public static func secret(key: String, fileIO: NonBlockingFileIO, on eventLoop: EventLoop) -> EventLoopFuture<String?> {
         guard let filePath = self.get(key) else {
-            return eventLoop.future(nil)
+            return eventLoop.any().makeSucceededFuture(nil)
         }
         return self.secret(path: filePath, fileIO: fileIO, on: eventLoop)
     }
