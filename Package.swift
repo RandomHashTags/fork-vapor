@@ -111,6 +111,7 @@ let package = Package(
             dependencies: [
                 .target(name: "VaporAuthentication"),
                 .target(name: "VaporBcrypt"),
+                .target(name: "VaporConsoleKit"),
                 .target(name: "VaporURLEncodedForm"),
                 .product(name: "Algorithms", package: "swift-algorithms"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
