@@ -129,6 +129,7 @@ let package = Package(
                 .product(name: "RoutingKit", package: "routing-kit"),
                 .product(name: "ServiceContextModule", package: "swift-service-context"),
                 .product(name: "WebSocketKit", package: "websocket-kit"),
+                .product(name: "_NIOFileSystem", package: "swift-nio"),
             ]
         ),
         
