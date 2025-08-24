@@ -1,6 +1,6 @@
 import Vapor
 import XCTest
-import Crypto
+import VaporCrypto
 
 final class OTPTests: XCTestCase {
     /// Basic TOTP tests using some RFC 6238 test vectors.

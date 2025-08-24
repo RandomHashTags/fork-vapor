@@ -1,6 +1,5 @@
 import Vapor
 import XCTVapor
-import AsyncHTTPClient
 import XCTest
 import NIOCore
 import NIOEmbedded

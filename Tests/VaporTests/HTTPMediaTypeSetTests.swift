@@ -1,4 +1,4 @@
-@testable import Vapor
+@testable import VaporHTTP
 import XCTest
 import NIOHTTP1
 

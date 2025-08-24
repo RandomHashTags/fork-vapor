@@ -1,4 +1,4 @@
-import NIOHTTP1
+import enum NIOHTTP1.HTTPResponseStatus
 
 public struct ValidationsResult: Sendable {
     public let results: [ValidationResult]

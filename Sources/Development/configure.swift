@@ -5,10 +5,10 @@ import NIOSSL
 public func configure(_ app: Application) throws {
     app.logger.logLevel = Environment.process.LOG_LEVEL ?? .debug
     
-    app.http.server.configuration.hostname = "127.0.0.1"
+    app.https.server.configuration.hostname = "127.0.0.1"
     if app.environment == .tls {
-        app.http.server.configuration.port = 8443
-        try app.http.server.configuration.tlsConfiguration = .makeServerConfiguration(
+        app.https.server.configuration.port = 8443
+        try app.https.server.configuration.tlsConfiguration = .makeServerConfiguration(
             certificateChain: NIOSSLCertificate.fromPEMBytes(TLSData.sampleServerCertificatePEM).map { .certificate($0) },
             privateKey: .privateKey(.init(bytes: TLSData.sampleServerPrivateKeyPEM, format: .pem))
         )

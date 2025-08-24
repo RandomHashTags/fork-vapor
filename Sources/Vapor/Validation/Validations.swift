@@ -1,4 +1,4 @@
-import Foundation
+import FoundationEssentials
 
 public struct Validations: Sendable {
     var storage: [Validation]

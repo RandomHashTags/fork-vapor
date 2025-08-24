@@ -5,16 +5,16 @@ import Dispatch
 @preconcurrency import Dispatch
 #endif
 #endif
-import Foundation
+import AsyncHTTPClient
+import Atomics
+import FoundationEssentials
 import Vapor
 import XCTest
-import AsyncHTTPClient
 import NIOCore
 import NIOPosix
 import NIOConcurrencyHelpers
 import NIOHTTP1
 import NIOSSL
-import Atomics
 
 final class ServerTests: XCTestCase, @unchecked Sendable {
     var app: Application!
@@ -436,30 +436,30 @@ final class ServerTests: XCTestCase, @unchecked Sendable {
         /// To regenerate, copy the above and run `% pbpaste | gzip | base64`. To verify, run `% pbpaste | base64 -d | gzip -d` instead.
         let compressedPayload = ByteBuffer(base64String: "H4sIANRAImYAA6tWSs7PLShKLS5OTVGyUohWyk6tBNJKZYk5palKOgqj/FH+KH+UP8of5RPmx9YCAMfjVAhQBgAA")!
         
-        app.http.server.configuration.hostname = "127.0.0.1"
-        app.http.server.configuration.port = 0
+        app.https.server.configuration.hostname = "127.0.0.1"
+        app.https.server.configuration.port = 0
         
         var serverConfig = TLSConfiguration.makeServerConfiguration(certificateChain: [.certificate(cert)], privateKey: .privateKey(key))
         serverConfig.certificateVerification = .noHostnameVerification
         
-        app.http.server.configuration.tlsConfiguration = serverConfig
-        app.http.server.configuration.customCertificateVerifyCallback = { @Sendable peerCerts, successPromise in
+        app.https.server.configuration.tlsConfiguration = serverConfig
+        app.https.server.configuration.customCertificateVerifyCallback = { @Sendable peerCerts, successPromise in
             /// This lies and accepts the above cert, which has actually expired.
             XCTAssertEqual(peerCerts, [cert])
             successPromise.succeed(.certificateVerified)
         }
-        app.http.server.configuration.supportVersions = [.two]
-        app.http.server.configuration.requestDecompression = .disabled
+        app.https.server.configuration.supportVersions = [.two]
+        app.https.server.configuration.requestDecompression = .disabled
         
         /// We need to disable verification on the client, because the cert we're using has expired
         var clientConfig = TLSConfiguration.makeClientConfiguration()
         clientConfig.certificateVerification = .none
         clientConfig.certificateChain = [.certificate(cert)]
         clientConfig.privateKey = .privateKey(key)
-        app.http.client.configuration.tlsConfiguration = clientConfig
+        app.https.client.configuration.tlsConfiguration = clientConfig
         
         /// Make sure the client doesn't keep the server open by re-using the connection.
-        app.http.client.configuration.maximumUsesPerConnection = 1
+        app.https.client.configuration.maximumUsesPerConnection = 1
         
         struct TestResponse: Content {
             var content: ByteBuffer?
@@ -477,10 +477,10 @@ final class ServerTests: XCTestCase, @unchecked Sendable {
         
         try await app.server.start(address: nil)
         
-        XCTAssertNotNil(app.http.server.shared.localAddress)
-        guard let localAddress = app.http.server.shared.localAddress,
+        XCTAssertNotNil(app.https.server.shared.localAddress)
+        guard let localAddress = app.https.server.shared.localAddress,
               let port = localAddress.port else {
-            XCTFail("couldn't get ip/port from \(app.http.server.shared.localAddress.debugDescription)")
+            XCTFail("couldn't get ip/port from \(app.https.server.shared.localAddress.debugDescription)")
             return
         }
         
@@ -510,7 +510,7 @@ final class ServerTests: XCTestCase, @unchecked Sendable {
             XCTFail("Missing unsupportedCompressedResponse.body")
         }
         
-        app.http.server.configuration.requestDecompression = .enabled(limit: .size(compressiblePayload.utf8.count))
+        app.https.server.configuration.requestDecompression = .enabled(limit: .size(compressiblePayload.utf8.count))
         
         let supportedUncompressedResponse = try await app.client.post("https://localhost:\(port)/compressed") { request in
             request.body = compressedPayload
@@ -609,40 +609,40 @@ final class ServerTests: XCTestCase, @unchecked Sendable {
         
         let compressiblePayload = #"{"compressed": ["key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value", "key": "value"]}"#
         
-        app.http.server.configuration.hostname = "127.0.0.1"
-        app.http.server.configuration.port = 0
+        app.https.server.configuration.hostname = "127.0.0.1"
+        app.https.server.configuration.port = 0
         
         var serverConfig = TLSConfiguration.makeServerConfiguration(certificateChain: [.certificate(cert)], privateKey: .privateKey(key))
         serverConfig.certificateVerification = .noHostnameVerification
         
-        app.http.server.configuration.tlsConfiguration = serverConfig
-        app.http.server.configuration.customCertificateVerifyCallback = { @Sendable peerCerts, successPromise in
+        app.https.server.configuration.tlsConfiguration = serverConfig
+        app.https.server.configuration.customCertificateVerifyCallback = { @Sendable peerCerts, successPromise in
             /// This lies and accepts the above cert, which has actually expired.
             XCTAssertEqual(peerCerts, [cert])
             successPromise.succeed(.certificateVerified)
         }
-        app.http.server.configuration.supportVersions = [.two]
-        app.http.server.configuration.responseCompression = .disabled
+        app.https.server.configuration.supportVersions = [.two]
+        app.https.server.configuration.responseCompression = .disabled
         
         /// We need to disable verification on the client, because the cert we're using has expired
         var clientConfig = TLSConfiguration.makeClientConfiguration()
         clientConfig.certificateVerification = .none
         clientConfig.certificateChain = [.certificate(cert)]
         clientConfig.privateKey = .privateKey(key)
-        app.http.client.configuration.tlsConfiguration = clientConfig
+        app.https.client.configuration.tlsConfiguration = clientConfig
         
-        app.http.client.configuration.decompression = .enabled(limit: .none)
+        app.https.client.configuration.decompression = .enabled(limit: .none)
         /// Make sure the client doesn't keep the server open by re-using the connection.
-        app.http.client.configuration.maximumUsesPerConnection = 1
+        app.https.client.configuration.maximumUsesPerConnection = 1
         
         app.get("compressed") { _ in compressiblePayload }
         
         try await app.server.start(address: nil)
         
-        XCTAssertNotNil(app.http.server.shared.localAddress)
-        guard let localAddress = app.http.server.shared.localAddress,
+        XCTAssertNotNil(app.https.server.shared.localAddress)
+        guard let localAddress = app.https.server.shared.localAddress,
               let port = localAddress.port else {
-            XCTFail("couldn't get ip/port from \(app.http.server.shared.localAddress.debugDescription)")
+            XCTFail("couldn't get ip/port from \(app.https.server.shared.localAddress.debugDescription)")
             return
         }
         
@@ -660,7 +660,7 @@ final class ServerTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(unsupportedCompressedResponse.headers.first(name: .contentLength), "\(compressiblePayload.count)")
         XCTAssertEqual(unsupportedCompressedResponse.body?.string, compressiblePayload)
         
-        app.http.server.configuration.responseCompression = .enabled
+        app.https.server.configuration.responseCompression = .enabled
         
         let supportedUncompressedResponse = try await app.client.get("https://localhost:\(port)/compressed") { request in
             request.headers.remove(name: .acceptEncoding)
@@ -1229,14 +1229,14 @@ final class ServerTests: XCTestCase, @unchecked Sendable {
         let cert = try NIOSSLCertificate(file: clientCertPath.path, format: .pem)
         let key = try NIOSSLPrivateKey(file: clientKeyPath.path, format: .pem)
                 
-        app.http.server.configuration.hostname = "127.0.0.1"
-        app.http.server.configuration.port = 0
+        app.https.server.configuration.hostname = "127.0.0.1"
+        app.https.server.configuration.port = 0
         
         var serverConfig = TLSConfiguration.makeServerConfiguration(certificateChain: [.certificate(cert)], privateKey: .privateKey(key))
         serverConfig.certificateVerification = .noHostnameVerification
         
-        app.http.server.configuration.tlsConfiguration = serverConfig
-        app.http.server.configuration.customCertificateVerifyCallback = { @Sendable peerCerts, successPromise in
+        app.https.server.configuration.tlsConfiguration = serverConfig
+        app.https.server.configuration.customCertificateVerifyCallback = { @Sendable peerCerts, successPromise in
             // This lies and accepts the above cert, which has actually expired.
             XCTAssertEqual(peerCerts, [cert])
             successPromise.succeed(.certificateVerified)
@@ -1248,7 +1248,7 @@ final class ServerTests: XCTestCase, @unchecked Sendable {
         clientConfig.certificateVerification = .none
         clientConfig.certificateChain = [.certificate(cert)]
         clientConfig.privateKey = .privateKey(key)
-        app.http.client.configuration.tlsConfiguration = clientConfig
+        app.https.client.configuration.tlsConfiguration = clientConfig
         
         app.environment.arguments = ["serve"]
         
@@ -1258,11 +1258,11 @@ final class ServerTests: XCTestCase, @unchecked Sendable {
         
         try app.start()
         
-        XCTAssertNotNil(app.http.server.shared.localAddress)
-        guard let localAddress = app.http.server.shared.localAddress,
+        XCTAssertNotNil(app.https.server.shared.localAddress)
+        guard let localAddress = app.https.server.shared.localAddress,
               let ip = localAddress.ipAddress,
               let port = localAddress.port else {
-            XCTFail("couldn't get ip/port from \(app.http.server.shared.localAddress.debugDescription)")
+            XCTFail("couldn't get ip/port from \(app.https.server.shared.localAddress.debugDescription)")
             return
         }
         
@@ -1270,7 +1270,7 @@ final class ServerTests: XCTestCase, @unchecked Sendable {
             url: "https://\(ip):\(port)/hello",
             method: .GET
         )
-        let a = try app.http.client.shared.execute(request: request).wait()
+        let a = try app.https.client.shared.execute(request: request).wait()
         XCTAssertEqual(a.body, ByteBuffer(string: "world"))
     }
     
@@ -1284,17 +1284,17 @@ final class ServerTests: XCTestCase, @unchecked Sendable {
         let cert = try NIOSSLCertificate(file: clientCertPath.path, format: .pem)
         let key = try NIOSSLPrivateKey(file: clientKeyPath.path, format: .pem)
                 
-        app.http.server.configuration.hostname = "127.0.0.1"
-        app.http.server.configuration.port = 0
-        app.http.server.configuration.serverName = "Old"
+        app.https.server.configuration.hostname = "127.0.0.1"
+        app.https.server.configuration.port = 0
+        app.https.server.configuration.serverName = "Old"
         
         /// We need to disable verification on the client, because the cert we're using has expired
         var clientConfig = TLSConfiguration.makeClientConfiguration()
         clientConfig.certificateVerification = .none
         clientConfig.certificateChain = [.certificate(cert)]
         clientConfig.privateKey = .privateKey(key)
-        app.http.client.configuration.tlsConfiguration = clientConfig
-        app.http.client.configuration.maximumUsesPerConnection = 1
+        app.https.client.configuration.tlsConfiguration = clientConfig
+        app.https.client.configuration.maximumUsesPerConnection = 1
         
         app.environment.arguments = ["serve"]
         
@@ -1304,16 +1304,16 @@ final class ServerTests: XCTestCase, @unchecked Sendable {
         
         try app.start()
         
-        XCTAssertNotNil(app.http.server.shared.localAddress)
-        guard let localAddress = app.http.server.shared.localAddress,
+        XCTAssertNotNil(app.https.server.shared.localAddress)
+        guard let localAddress = app.https.server.shared.localAddress,
               let ip = localAddress.ipAddress,
               let port = localAddress.port else {
-            XCTFail("couldn't get ip/port from \(app.http.server.shared.localAddress.debugDescription)")
+            XCTFail("couldn't get ip/port from \(app.https.server.shared.localAddress.debugDescription)")
             return
         }
         
         /// Make a regular request
-        let a = try app.http.client.shared.execute(
+        let a = try app.https.client.shared.execute(
             request: try HTTPClient.Request(
                 url: "http://\(ip):\(port)/hello",
                 method: .GET
@@ -1323,20 +1323,20 @@ final class ServerTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(a.body, ByteBuffer(string: "world"))
         
         /// Configure server name without stopping the server
-        app.http.server.configuration.serverName = "New"
+        app.https.server.configuration.serverName = "New"
         /// Configure TLS without stopping the server
         var serverConfig = TLSConfiguration.makeServerConfiguration(certificateChain: [.certificate(cert)], privateKey: .privateKey(key))
         serverConfig.certificateVerification = .noHostnameVerification
         
-        app.http.server.configuration.tlsConfiguration = serverConfig
-        app.http.server.configuration.customCertificateVerifyCallback = { @Sendable peerCerts, successPromise in
+        app.https.server.configuration.tlsConfiguration = serverConfig
+        app.https.server.configuration.customCertificateVerifyCallback = { @Sendable peerCerts, successPromise in
             /// This lies and accepts the above cert, which has actually expired.
             XCTAssertEqual(peerCerts, [cert])
             successPromise.succeed(.certificateVerified)
         }
         
         /// Make a TLS request this time around
-        let b = try app.http.client.shared.execute(
+        let b = try app.https.client.shared.execute(
             request: try HTTPClient.Request(
                 url: "https://\(ip):\(port)/hello",
                 method: .GET
@@ -1346,7 +1346,7 @@ final class ServerTests: XCTestCase, @unchecked Sendable {
         XCTAssertEqual(b.body, ByteBuffer(string: "world"))
         
         /// Non-TLS request should now fail
-        XCTAssertThrowsError(try app.http.client.shared.execute(
+        XCTAssertThrowsError(try app.https.client.shared.execute(
             request: try HTTPClient.Request(
                 url: "http://\(ip):\(port)/hello",
                 method: .GET

@@ -1,4 +1,5 @@
 #if compiler(>=6.0) && canImport(Testing)
+import FoundationEssentials
 import Testing
 
 public func expectContent<D>(

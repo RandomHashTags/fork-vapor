@@ -15,7 +15,7 @@
 // more.
 
 import Metrics
-import Foundation
+import FoundationEssentials
 import NIOConcurrencyHelpers
 
 /// Metrics factory which allows inspecting recorded metrics programmatically.

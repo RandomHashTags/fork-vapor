@@ -1,4 +1,4 @@
-@testable import Vapor
+@testable import VaporHTTP
 import XCTest
 import NIOCore
 
@@ -116,13 +116,13 @@ final class BodyStreamStateTests: XCTestCase {
     }
 }
 
-extension Vapor.HTTPBodyStreamState.Result: Swift.Equatable {
+extension VaporHTTP.HTTPBodyStreamState.Result: Swift.Equatable {
     public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.action == rhs.action && lhs.callRead == rhs.callRead
     }
 }
 
-extension Vapor.HTTPBodyStreamState.Result.Action: Swift.Equatable {
+extension VaporHTTP.HTTPBodyStreamState.Result.Action: Swift.Equatable {
     public static func == (lhs: Self, rhs: Self) -> Bool {
         switch (lhs, rhs) {
         case (.nothing, .nothing):

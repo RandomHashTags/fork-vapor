@@ -1,4 +1,4 @@
-import Foundation
+import FoundationEssentials
 import Logging
 import Vapor
 

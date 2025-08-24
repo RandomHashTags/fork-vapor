@@ -1,3 +1,4 @@
+import NIO
 import XCTVapor
 import Vapor
 import XCTest

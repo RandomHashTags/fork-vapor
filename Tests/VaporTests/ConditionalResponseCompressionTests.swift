@@ -1,10 +1,9 @@
 #if !canImport(Darwin)
 @preconcurrency import Dispatch
 #endif
-import Foundation
+import FoundationEssentials
 import Vapor
 import XCTest
-import AsyncHTTPClient
 import NIOCore
 import NIOPosix
 import NIOConcurrencyHelpers

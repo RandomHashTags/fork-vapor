@@ -1,6 +1,5 @@
 // swift-tools-version:5.9
 import PackageDescription
-import Foundation
 
 let package = Package(
     name: "vapor",
@@ -11,7 +10,8 @@ let package = Package(
         .watchOS(.v6)
     ],
     products: [
-        .library(name: "Vapor", targets: ["Vapor"]),
+        .library(name: "Vapor", targets: ["Vapor"]), // http & https
+        .library(name: "VaporHTTP", targets: ["VaporHTTP"]), // http only
         .library(name: "XCTVapor", targets: ["XCTVapor"]),
         .library(name: "VaporTesting", targets: ["VaporTesting"]),
     ],
@@ -71,14 +71,96 @@ let package = Package(
         // C helpers
         .target(name: "CVaporBcrypt"),
         
+        // VaporBcrypt
+        .target(
+            name: "VaporAuthentication",
+            dependencies: [
+                .product(name: "NIOCore", package: "swift-nio"),
+                .product(name: "NIOHTTP1", package: "swift-nio"),
+            ]
+        ),
+        
+        // VaporBcrypt
+        .target(
+            name: "VaporBcrypt",
+            dependencies: [
+                .target(name: "CVaporBcrypt"),
+                .target(name: "VaporPasswords")
+            ]
+        ),
+
+        // VaporConsoleKit
+        .target(
+            name: "VaporConsoleKit",
+            dependencies: [
+                .product(name: "ConsoleKit", package: "console-kit")
+            ]
+        ),
+        
+        // VaporCrypto
+        .target(
+            name: "VaporCrypto",
+            dependencies: [
+                .product(name: "Crypto", package: "swift-crypto")
+            ]
+        ),
+
+        // VaporHTTP
+        .target(
+            name: "VaporHTTP",
+            dependencies: [
+                .target(name: "VaporAuthentication"),
+                .target(name: "VaporBcrypt"),
+                .target(name: "VaporURLEncodedForm"),
+                .product(name: "Algorithms", package: "swift-algorithms"),
+                .product(name: "AsyncHTTPClient", package: "async-http-client"),
+                .product(name: "ConsoleKit", package: "console-kit"),
+                .product(name: "Logging", package: "swift-log"),
+                .product(name: "NIOConcurrencyHelpers", package: "swift-nio"),
+                .product(name: "NIOCore", package: "swift-nio"),
+                .product(name: "NIOExtras", package: "swift-nio-extras"),
+                .product(name: "NIOHTTPCompression", package: "swift-nio-extras"),
+                .product(name: "NIOHTTP1", package: "swift-nio"),
+                .product(name: "NIOHTTP2", package: "swift-nio-http2"),
+                .product(name: "NIOWebSocket", package: "swift-nio"),
+                .product(name: "RoutingKit", package: "routing-kit"),
+                .product(name: "ServiceContextModule", package: "swift-service-context"),
+                .product(name: "WebSocketKit", package: "websocket-kit"),
+            ]
+        ),
+
+        // VaporHTTPClient
+        .target(
+            name: "VaporHTTPClient",
+            dependencies: [
+                .product(name: "AsyncHTTPClient", package: "async-http-client"),
+            ]
+        ),
+        
+        // VaporPasswords
+        .target(
+            name: "VaporPasswords"
+        ),
+        
+        // VaporURLEncodedForm
+        .target(
+            name: "VaporURLEncodedForm"
+        ),
+
         // Vapor
         .target(
             name: "Vapor",
             dependencies: [
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "AsyncKit", package: "async-kit"),
-                .target(name: "CVaporBcrypt"),
-                .product(name: "ConsoleKit", package: "console-kit"),
+                .target(name: "VaporAuthentication"),
+                .target(name: "VaporBcrypt"),
+                .target(name: "VaporConsoleKit"),
+                .target(name: "VaporCrypto"),
+                .target(name: "VaporHTTP"),
+                .target(name: "VaporHTTPClient"),
+                .target(name: "VaporPasswords"),
+                .target(name: "VaporURLEncodedForm"),
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Metrics", package: "swift-metrics"),
                 .product(name: "Tracing", package: "swift-distributed-tracing"),
@@ -93,7 +175,6 @@ let package = Package(
                 .product(name: "NIOHTTP2", package: "swift-nio-http2"),
                 .product(name: "NIOSSL", package: "swift-nio-ssl"),
                 .product(name: "NIOWebSocket", package: "swift-nio"),
-                .product(name: "Crypto", package: "swift-crypto"),
                 .product(name: "Algorithms", package: "swift-algorithms"),
                 .product(name: "RoutingKit", package: "routing-kit"),
                 .product(name: "WebSocketKit", package: "websocket-kit"),

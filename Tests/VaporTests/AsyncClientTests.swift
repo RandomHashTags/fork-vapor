@@ -1,3 +1,5 @@
+import AsyncHTTPClient
+import Foundation
 import Vapor
 import NIOConcurrencyHelpers
 import NIOCore

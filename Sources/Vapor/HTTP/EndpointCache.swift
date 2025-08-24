@@ -1,4 +1,4 @@
-import Foundation
+import FoundationEssentials
 import NIOConcurrencyHelpers
 import NIOCore
 import Logging

@@ -1,4 +1,6 @@
 import AsyncHTTPClient
+import struct NIOCore.ByteBufferAllocator
+import class NIOPosix.MultiThreadedEventLoopGroup
 import Vapor
 
 extension Application {

@@ -1,3 +1,5 @@
+import struct NIOCore.ByteBuffer
+import struct NIOCore.ByteBufferAllocator
 import NIOHTTP1
 import XCTest
 

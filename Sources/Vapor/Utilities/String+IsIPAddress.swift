@@ -1,6 +1,9 @@
-import Foundation
 #if canImport(Android)
 import Android
+#elseif canImport(SwiftGlibc)
+import SwiftGlibc
+#else
+import Foundation
 #endif
 
 extension String {

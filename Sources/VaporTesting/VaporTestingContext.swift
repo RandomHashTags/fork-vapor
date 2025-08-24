@@ -1,4 +1,5 @@
 #if compiler(>=6.0) && canImport(Testing)
+import Foundation
 import Testing
 
 public enum VaporTestingContext {

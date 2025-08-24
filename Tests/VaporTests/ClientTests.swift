@@ -5,12 +5,12 @@ import Dispatch
 @preconcurrency import Dispatch
 #endif
 #endif
-import Foundation
+import AsyncHTTPClient
+import FoundationEssentials
 import XCTest
 import Vapor
 import NIOCore
 import Logging
-import AsyncHTTPClient
 import NIOEmbedded
 import NIOConcurrencyHelpers
 

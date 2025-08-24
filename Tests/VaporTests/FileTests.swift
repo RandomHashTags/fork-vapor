@@ -3,7 +3,6 @@ import XCTest
 import Vapor
 import NIOCore
 import NIOHTTP1
-import Crypto
 
 final class FileTests: XCTestCase {
     var app: Application!
