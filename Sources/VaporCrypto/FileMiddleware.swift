@@ -2,6 +2,7 @@ import Foundation
 import NIOCore
 import _NIOFileSystem
 import struct NIOHTTP1.HTTPHeaders
+import VaporHTTP
 
 /// Serves static files from a public directory.
 ///

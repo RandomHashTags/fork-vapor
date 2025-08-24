@@ -8,6 +8,10 @@ extension HTTPHeaders {
     public struct LastModified {
         public var value: Date
 
+        package init(value: Date) {
+            self.value = value
+        }
+
         internal static func parse(_ dateString: String) -> LastModified? {
             let fmt = DateFormatter()
             fmt.locale = Locale(identifier: "en_US_POSIX")
