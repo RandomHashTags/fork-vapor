@@ -2,6 +2,7 @@ import class AsyncHTTPClient.HTTPClient
 import FoundationEssentials
 import Logging
 import NIOCore
+import VaporHTTP
 
 extension HTTPClient {
     func delegating(to eventLoop: EventLoop, logger: Logger, byteBufferAllocator: ByteBufferAllocator) -> Client {

@@ -1,4 +1,5 @@
 import AsyncHTTPClient
+import VaporHTTP
 
 extension Application.Clients.Provider {
     public static var http: Self {

@@ -163,7 +163,7 @@ public final class Application: Sendable {
         self.servers.initialize()
         self.servers.use(.http)
         self.clients.initialize()
-        self.clients.use(.http)
+        //self.clients.use(.http) // TODO: fix?
         self.asyncCommands.use(RoutesCommand(), as: "routes")
     }
     

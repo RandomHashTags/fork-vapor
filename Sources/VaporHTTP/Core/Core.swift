@@ -73,17 +73,17 @@ extension Application {
         set { self.core.storage.directory.withLockedValue { $0 = newValue } }
     }
 
-    internal var core: Core {
+    package var core: Core {
         .init(application: self)
     }
 
     public struct Core: Sendable {
-        final class Storage: Sendable {
+        package final class Storage: Sendable {
             let console: NIOLockedValueBox<Console>
             let commands: NIOLockedValueBox<Commands>
             let asyncCommands: NIOLockedValueBox<AsyncCommands>
             let threadPool: NIOLockedValueBox<NIOThreadPool>
-            let allocator: ByteBufferAllocator
+            package let allocator: ByteBufferAllocator
             let running: Application.Running.Storage
             let directory: NIOLockedValueBox<DirectoryConfiguration>
 
@@ -134,7 +134,7 @@ extension Application {
 
         let application: Application
 
-        var storage: Storage {
+        package var storage: Storage {
             guard let storage = self.application.storage[Key.self] else {
                 fatalError("Core not configured. Configure with app.core.initialize()")
             }

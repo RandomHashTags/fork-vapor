@@ -11,6 +11,7 @@ let package = Package(
     ],
     products: [
         .library(name: "Vapor", targets: ["Vapor"]), // http & https
+        .library(name: "VaporAsyncHTTPClient", targets: ["VaporAsyncHTTPClient"]),
         .library(name: "VaporCrypto", targets: ["VaporCrypto"]),
         .library(name: "VaporTracing", targets: ["VaporTracing"]),
         .library(name: "VaporWebSocket", targets: ["VaporWebSocket"]),
@@ -74,6 +75,17 @@ let package = Package(
     targets: [
         // C helpers
         .target(name: "CVaporBcrypt"),
+
+        // VaporAsyncHTTPClient
+        .target(
+            name: "VaporAsyncHTTPClient",
+            dependencies: [
+                .target(name: "VaporHTTP"),
+                .product(name: "AsyncHTTPClient", package: "async-http-client"),
+                .product(name: "Logging", package: "swift-log"),
+                .product(name: "NIOCore", package: "swift-nio")
+            ]
+        ),
         
         // VaporBcrypt
         .target(
@@ -122,7 +134,6 @@ let package = Package(
                 .target(name: "VaporConsoleKit"),
                 .target(name: "VaporURLEncodedForm"),
                 .product(name: "Algorithms", package: "swift-algorithms"),
-                .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "AsyncKit", package: "async-kit"),
                 .product(name: "ConsoleKit", package: "console-kit"),
                 .product(name: "Logging", package: "swift-log"),
