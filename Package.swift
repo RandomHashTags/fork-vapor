@@ -128,14 +128,6 @@ let package = Package(
                 .product(name: "WebSocketKit", package: "websocket-kit"),
             ]
         ),
-
-        // VaporHTTPClient
-        .target(
-            name: "VaporHTTPClient",
-            dependencies: [
-                .product(name: "AsyncHTTPClient", package: "async-http-client"),
-            ]
-        ),
         
         // VaporPasswords
         .target(
@@ -158,7 +150,6 @@ let package = Package(
                 .target(name: "VaporConsoleKit"),
                 .target(name: "VaporCrypto"),
                 .target(name: "VaporHTTP"),
-                .target(name: "VaporHTTPClient"),
                 .target(name: "VaporPasswords"),
                 .target(name: "VaporURLEncodedForm"),
                 .product(name: "Logging", package: "swift-log"),
