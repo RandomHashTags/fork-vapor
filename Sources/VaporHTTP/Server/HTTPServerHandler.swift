@@ -1,21 +1,21 @@
 import NIOCore
 import Logging
 
-final class HTTPServerHandler: ChannelInboundHandler, RemovableChannelHandler {
-    typealias InboundIn = Request
-    typealias OutboundOut = Response
+package final class HTTPServerHandler: ChannelInboundHandler, RemovableChannelHandler {
+    package typealias InboundIn = Request
+    package typealias OutboundOut = Response
     
     let responder: Responder
     let logger: Logger
     var isShuttingDown: Bool
     
-    init(responder: Responder, logger: Logger) {
+    package init(responder: Responder, logger: Logger) {
         self.responder = responder
         self.logger = logger
         self.isShuttingDown = false
     }
     
-    func channelRead(context: ChannelHandlerContext, data: NIOAny) {
+    package func channelRead(context: ChannelHandlerContext, data: NIOAny) {
         let box = NIOLoopBound((context, self), eventLoop: context.eventLoop)
         let request = self.unwrapInboundIn(data)
         // hop(to:) is required here to ensure we're on the correct event loop
@@ -70,7 +70,7 @@ final class HTTPServerHandler: ChannelInboundHandler, RemovableChannelHandler {
         }
     }
     
-    func userInboundEventTriggered(context: ChannelHandlerContext, event: Any) {
+    package func userInboundEventTriggered(context: ChannelHandlerContext, event: Any) {
         switch event {
         case is ChannelShouldQuiesceEvent:
             self.logger.trace("HTTP handler will no longer respect keep-alive")

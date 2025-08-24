@@ -1,6 +1,5 @@
 import NIOCore
 import NIOHTTP1
-import NIOFoundationCompat
 import NIOConcurrencyHelpers
 
 /// An HTTP response from a server back to the client.

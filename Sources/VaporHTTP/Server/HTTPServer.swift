@@ -1,7 +1,6 @@
 import NIOCore
 import NIOExtras
 import NIOHTTP1
-import NIOHTTP2
 import NIOHTTPCompression
 import Logging
 import NIOPosix
@@ -482,56 +481,6 @@ extension HTTPResponseHead {
 }
 
 extension ChannelPipeline {
-    package func addVaporHTTP2Handlers(
-        application: Application,
-        responder: Responder,
-        configuration: HTTPServer.Configuration
-    ) -> EventLoopFuture<Void> {
-        /// Create server pipeline array.
-        var handlers: [ChannelHandler] = []
-        
-        let http2 = HTTP2FramePayloadToHTTP1ServerCodec()
-        handlers.append(http2)
-        
-        /// Add response compressor as configured.
-        handlers.append(configuration.responseCompression.makeCompressor())
-        
-        /// Add request decompressor if configured.
-        switch configuration.requestDecompression.storage {
-        case .enabled(let limit):
-            let requestDecompressionHandler = NIOHTTPRequestDecompressor(
-                limit: limit
-            )
-            handlers.append(requestDecompressionHandler)
-        case .disabled:
-            break
-        }
-        
-        /// Add NIO → HTTP request decoder.
-        let serverReqDecoder = HTTPServerRequestDecoder(
-            application: application
-        )
-        handlers.append(serverReqDecoder)
-        
-        /// Add NIO → HTTP response encoder.
-        let serverResEncoder = HTTPServerResponseEncoder(
-            serverHeader: configuration.serverName,
-            dateCache: .eventLoop(self.eventLoop)
-        )
-        handlers.append(serverResEncoder)
-        
-        /// Add server request → response delegate.
-        let handler = HTTPServerHandler(responder: responder, logger: application.logger)
-        handlers.append(handler)
-        
-        return self.eventLoop.makeCompletedFuture {
-            try self.syncOperations.addHandlers(handlers)
-        }.flatMap {
-            /// Close the connection in case of any errors.
-            self.addHandler(NIOCloseOnErrorHandler())
-        }
-    }
-    
     package func addVaporHTTP1Handlers(
         application: Application,
         responder: Responder,

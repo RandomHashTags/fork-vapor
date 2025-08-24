@@ -4,3 +4,4 @@
 @_exported import VaporHTTP
 @_exported import VaporPasswords
 @_exported import VaporURLEncodedForm
+@_exported import VaporTracing

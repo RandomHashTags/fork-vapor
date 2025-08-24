@@ -124,14 +124,11 @@ let package = Package(
                 .product(name: "NIOConcurrencyHelpers", package: "swift-nio"),
                 .product(name: "NIOCore", package: "swift-nio"),
                 .product(name: "NIOExtras", package: "swift-nio-extras"),
-                .product(name: "NIOFoundationCompat", package: "swift-nio"),
                 .product(name: "NIOHTTPCompression", package: "swift-nio-extras"),
                 .product(name: "NIOHTTP1", package: "swift-nio"),
-                .product(name: "NIOHTTP2", package: "swift-nio-http2"),
                 .product(name: "NIOWebSocket", package: "swift-nio"),
                 .product(name: "RoutingKit", package: "routing-kit"),
                 .product(name: "ServiceContextModule", package: "swift-service-context"),
-                .product(name: "Tracing", package: "swift-distributed-tracing"),
                 .product(name: "WebSocketKit", package: "websocket-kit"),
                 .product(name: "_NIOFileSystem", package: "swift-nio"),
                 .product(name: "_NIOFileSystemFoundationCompat", package: "swift-nio")
@@ -141,6 +138,16 @@ let package = Package(
         // VaporPasswords
         .target(
             name: "VaporPasswords"
+        ),
+
+        // VaporTracing
+        .target(
+            name: "VaporTracing",
+            dependencies: [
+                .target(name: "VaporHTTP"),
+                .product(name: "NIOHTTP1", package: "swift-nio"),
+                .product(name: "Tracing", package: "swift-distributed-tracing")
+            ]
         ),
         
         // VaporURLEncodedForm
@@ -163,6 +170,7 @@ let package = Package(
                 .target(name: "VaporCrypto"),
                 .target(name: "VaporHTTP"),
                 .target(name: "VaporPasswords"),
+                .target(name: "VaporTracing"),
                 .target(name: "VaporURLEncodedForm"),
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Metrics", package: "swift-metrics"),

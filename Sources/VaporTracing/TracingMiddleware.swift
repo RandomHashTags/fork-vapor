@@ -1,5 +1,6 @@
 import struct NIOHTTP1.HTTPHeaders
 import Tracing
+import VaporHTTP
 
 /// Creates a trace and metadata for every request
 ///

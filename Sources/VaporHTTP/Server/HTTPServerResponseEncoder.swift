@@ -2,9 +2,9 @@ import NIOCore
 import NIOHTTP1
 import NIOConcurrencyHelpers
 
-final class HTTPServerResponseEncoder: ChannelOutboundHandler, RemovableChannelHandler {
-    typealias OutboundIn = Response
-    typealias OutboundOut = HTTPServerResponsePart
+package final class HTTPServerResponseEncoder: ChannelOutboundHandler, RemovableChannelHandler {
+    package typealias OutboundIn = Response
+    package typealias OutboundOut = HTTPServerResponsePart
     
     /// Optional server header.
     private let serverHeader: String?
@@ -12,12 +12,12 @@ final class HTTPServerResponseEncoder: ChannelOutboundHandler, RemovableChannelH
 
     struct ResponseEndSentEvent { }
     
-    init(serverHeader: String?, dateCache: RFC1123DateCache) {
+    package init(serverHeader: String?, dateCache: RFC1123DateCache) {
         self.serverHeader = serverHeader
         self.dateCache = dateCache
     }
     
-    func write(context: ChannelHandlerContext, data: NIOAny, promise: EventLoopPromise<Void>?) {
+    package func write(context: ChannelHandlerContext, data: NIOAny, promise: EventLoopPromise<Void>?) {
         let response = self.unwrapOutboundIn(data)
         var headOrNoContentRequest = false
         response.responseBox.withLockedValue { box in

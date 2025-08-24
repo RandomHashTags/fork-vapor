@@ -3,10 +3,10 @@ import Logging
 import NIOCore
 import NIOHTTP1
 
-final class HTTPServerRequestDecoder: ChannelDuplexHandler, RemovableChannelHandler {
-    typealias InboundIn = HTTPServerRequestPart
-    typealias InboundOut = Request
-    typealias OutboundIn = Never
+package final class HTTPServerRequestDecoder: ChannelDuplexHandler, RemovableChannelHandler {
+    package typealias InboundIn = HTTPServerRequestPart
+    package typealias InboundOut = Request
+    package typealias OutboundIn = Never
 
     enum RequestState {
         case ready
@@ -24,13 +24,13 @@ final class HTTPServerRequestDecoder: ChannelDuplexHandler, RemovableChannelHand
     }
     var application: Application
     
-    init(application: Application) {
+    package init(application: Application) {
         self.application = application
         self.requestState = .ready
         self.bodyStreamState = .init()
     }
     
-    func channelRead(context: ChannelHandlerContext, data: NIOAny) {
+    package func channelRead(context: ChannelHandlerContext, data: NIOAny) {
         assert(context.channel.eventLoop.inEventLoop)
         let part = self.unwrapInboundIn(data)
         self.logger.trace("Decoded HTTP part: \(part)")
@@ -121,7 +121,7 @@ final class HTTPServerRequestDecoder: ChannelDuplexHandler, RemovableChannelHand
         }
     }
 
-    func read(context: ChannelHandlerContext) {
+    package func read(context: ChannelHandlerContext) {
         switch self.requestState {
         case .streamingBody(let stream):
             self.handleBodyStreamStateResult(
@@ -134,7 +134,7 @@ final class HTTPServerRequestDecoder: ChannelDuplexHandler, RemovableChannelHand
         }
     }
 
-    func errorCaught(context: ChannelHandlerContext, error: Error) {
+    package func errorCaught(context: ChannelHandlerContext, error: Error) {
         switch self.requestState {
         case .streamingBody(let stream):
             self.handleBodyStreamStateResult(
@@ -152,7 +152,7 @@ final class HTTPServerRequestDecoder: ChannelDuplexHandler, RemovableChannelHand
         context.fireErrorCaught(error)
     }
 
-    func channelInactive(context: ChannelHandlerContext) {
+    package func channelInactive(context: ChannelHandlerContext) {
         switch self.requestState {
         case .streamingBody(let stream):
             self.handleBodyStreamStateResult(
@@ -204,7 +204,7 @@ final class HTTPServerRequestDecoder: ChannelDuplexHandler, RemovableChannelHand
         }
     }
 
-    func userInboundEventTriggered(context: ChannelHandlerContext, event: Any) {
+    package func userInboundEventTriggered(context: ChannelHandlerContext, event: Any) {
         switch event {
         case is HTTPServerResponseEncoder.ResponseEndSentEvent:
             switch self.requestState {
